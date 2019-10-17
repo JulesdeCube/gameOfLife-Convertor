@@ -9,22 +9,81 @@
 <body>
   <textarea name="" id="input" cols="30" rows="10"></textarea>
   <button id="convert" >convert</button>
+  <label for="">Run Length Encoded</label><input type="checkbox" name="erge" id="ex">
   <textarea name="" id="output" cols="30" rows="10"></textarea>
 </body>
 <script>
-let input = document.getElementById("input");
-let output = document.getElementById("output");
-let button = document.getElementById("convert");
-button.addEventListener("click", () => {
-  let text = input.value.split('\n');
-  for (let i = 0; i < text.length; i++) {
-    text[i] = text[i].split('');
-    for (let j = 0; j < text[i].length; j++) {
-      text[i][j] = text[i][j] == '.'? 1 : 0;
+  let input = document.getElementById("input");
+  let output = document.getElementById("output");
+  let ex = document.getElementById("ex");
+  let button = document.getElementById("convert");
+  button.addEventListener("click", () => {
+    let text = ''
+    if (ex.checked) {
+      
+    let inp = input.value.replace(/\n/gi, '');
+    
+    let nb = 1;
+    let n = true;
+    for (let i = 0; i < inp.length; i++) {
+      switch (inp[i]) {
+        case 'b':
+          text += genrate_string('.', nb);
+          nb = 1;
+          n = true;
+        break;
+        
+        case 'o':
+          text += genrate_string('O', nb);
+          nb = 1;
+          n = true;   
+        break;
+
+        case '$':
+          nb = 1;
+          n = true;
+          text += '\n';
+        break;
+        
+        default:
+          let v = parseInt(inp[i], 10)
+        nb = n? v : nb*10+ v;
+        n = false;
+        break;
+        
+      }
+      
       
     }
-  }
-  output.value =JSON.stringify(text).replace(/,/gi, ';');
-})
+
+     text = text.split('\n');
+    } else {
+      text = input.value.split('\n');
+      
+    }
+    
+     for (let i = 0; i < text.length; i++) {
+       text[i] = text[i].split('');
+       for (let j = 0; j < text[i].length; j++) {
+         text[i][j] = text[i][j] == '.'? 1 : 0;
+       }
+     }
+     fillEnd(text[text.length-1], text[text.length-2].length)
+    
+    function genrate_string (str, n) {
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        out += str;
+      }
+      return out;
+    }
+    function fillEnd (str, l) {
+      let out = '';
+      while (str.length < l) {
+        str.push(0) 
+      }
+    }
+    output.value =JSON.stringify(text).replace(/,/gi, ';');
+  })
 </script>
 </html>
